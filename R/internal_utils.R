@@ -5,7 +5,7 @@
 #' Many transform functions can only (or at least should only) be applied to
 #' spectra with monotonically varying (very likely increasing) wavelength values.
 #' \code{i_is_increasing} tests that case and may throw an error
-#' or return the boolen result from the test.
+#' or return the boolean result from the test.
 #'
 #' @param x wavelengths
 #' @param stop boolean. Throw error if test fails? Defaults to TRUE
@@ -42,43 +42,50 @@ i_is_whole = function(x){
 #'
 #' \code{i_is_index} Tests if x fit the requirements of being indices
 #'
+#' This function potentially allows negative indices, given that they may be used
+#' with the intent of removing an entry that corresponds to the index. Conversely,
+#' zero is never used as an index in R and is not recognized as such here.
+#'
 #' @param x numeric values
-#' @param max_length Max acceptable values for x
-#' @param all boolean. If TRUE, a single logical value is returned. Else, a vector
-#'                     of length = length(x) is returned
-#' @param allow_negative boolean. Allow negative integers (used in subsetting?).
-#'                       defaults to FALSE
-#' @param quiet boolean. Get warnings?
+#' @param max_length Max acceptable values for x (inclusive). Must be >= 1
+#' @param allow_negative boolean. Count negative integers as indices? defaults to FALSE
+#'
 #' @return boolean
 #'
 #' @author Jose Eduardo Meireles
 #' @keywords internal
-i_is_index = function(x, max_length, all = TRUE, allow_negative = FALSE, quiet = TRUE){
-    if(quiet){
-        w = suppressWarnings(i_is_whole(x))
-    } else {
-        w = i_is_whole(x)
+i_is_index = function(x, max_value, allow_negative = FALSE){
+
+    if(max_value < 1){
+        stop("max_value must be >= 1")
     }
 
-    if(allow_negative){
-        ## Even if allow_negative == TRUE, I cannot allow mixing positive and
-        ## negative indices
-        if(all(x > 0)) {
-            p = x <= round(max_length, digits = 0)
-        } else if(all(x < 0)){
-            p = x >= round( - max_length, digits = 0)
+    w = i_is_whole(x)
+
+    ## In case there are no whole numbers, return result
+    if( all( !w )){
+        warning("None of the indices are whole numbers.")
+        return(w)
+    }
+
+    ## Case some values are whole numbers.
+    ## Even if negative values are allowed, x cannot have both negative and
+    ## positive values...
+    if(all(x >= 0)){
+        p = x <= round(max_value, digits = 0) & x != 0
+    } else if (all(x <= 0) ){
+        if(allow_negative){
+            p = x >= round( - max_value, digits = 0)  & x != 0
         } else {
-            stop("cannot mix positive and negative indices")
+            p = x >= round(  max_value, digits = 0)  & x != 0
         }
     } else {
-        p = x > 0 & x <= round(max_length, digits = 0)
+        stop("cannot mix positive and negative indices")
     }
 
-    r = w & p
-    if(all){ r = all(r) }
-    r
+    ## Combine information from `w` and `p` and return
+    w & p
 }
-
 
 #' Match label
 #'
@@ -203,7 +210,7 @@ i_match_label_or_idx = function(x, i, full = FALSE, allow_empty_lookup = FALSE, 
     ########################################
     # Now match to index
     ########################################
-    d = i_is_index(x = i, max_length = l, all = FALSE, allow_negative = allow_negative)
+    d = i_is_index(x = i, max_value = l, allow_negative = allow_negative)
 
     if (any(d)){
         r = i_match_index(ii = i, dd = d, ll = l)
