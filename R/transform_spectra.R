@@ -26,7 +26,7 @@
 #'
 #' @examples
 #' library(spectrolab)
-#' spec = as.spectra(spec_matrix_example)
+#' spec = as.spectra(spec_matrix_example, name_idx = 1)
 #' spec_mean = apply_by_band(spec, mean)
 apply_by_band = function(x, fun, na.rm = TRUE, keep_txt_meta = TRUE, name = NULL, ...){
     UseMethod("apply_by_band")
@@ -56,7 +56,6 @@ apply_by_band.spectra = function(x, fun, na.rm = TRUE, keep_txt_meta = TRUE, nam
 
     r  = apply(as.matrix(x), 2, f, ...)
     w  = wavelengths(x)
-    e  = enforce01(x)
     m0 = meta(x)
     m = m0
 
@@ -71,7 +70,7 @@ apply_by_band.spectra = function(x, fun, na.rm = TRUE, keep_txt_meta = TRUE, nam
         m = lapply(m, fm, ...)  # Calling lapply because meta is always a data.frame
         m = do.call(cbind, m)
     }
-    spectra(reflectance = r, wavelengths = w, names = n, meta = m, enforce01 = e)
+    spectra(reflectance = r, wavelengths = w, names = n, meta = m)
 }
 
 
@@ -103,7 +102,7 @@ apply_by_band.spectra = function(x, fun, na.rm = TRUE, keep_txt_meta = TRUE, nam
 #'
 #' @examples
 #' library(spectrolab)
-#' spec = as.spectra(spec_matrix_example)
+#' spec = as.spectra(spec_matrix_example, name_idx = 1)
 #' spec_mean = aggregate(spec, by = names(spec), mean, try_keep_txt(mean))
 aggregate.spectra = function(x, by, FUN, FUN_meta = NULL, ...){
 
@@ -120,7 +119,6 @@ aggregate.spectra = function(x, by, FUN, FUN_meta = NULL, ...){
     s = as.spectra(r, 1)
     meta(s) = m[ , -1]
 
-    enforce01(s) = enforce01(x)
     s
 }
 
@@ -144,9 +142,9 @@ aggregate.spectra = function(x, by, FUN, FUN_meta = NULL, ...){
 #' library(spectrolab)
 #'
 #' # Create dummy spectra datasets. Pretend that these are all different...
-#' s1 = as.spectra(spec_matrix_example)
-#' s2 = as.spectra(spec_matrix_example)
-#' s3 = as.spectra(spec_matrix_example)
+#' s1 = as.spectra(spec_matrix_example, name_idx = 1)
+#' s2 = as.spectra(spec_matrix_example, name_idx = 1)
+#' s3 = as.spectra(spec_matrix_example, name_idx = 1)
 #'
 #' # combine 2 spectra objects
 #' s_1and2 = combine(s1, s2)
@@ -173,13 +171,6 @@ combine.spectra = function(s1, s2){
     n = c(names(s1), names(s2))
     w = wavelengths(s1)               ## OK because I tested for equality before
 
-    if(enforce01(s1) != enforce01(s2)){
-        warning("Spectra objects have different enforce01 requirements.\n  Setting enforce01 to FALSE...")
-        e = FALSE
-    } else {
-        e = enforce01(s1)             ## OK because I tested for inequality before
-    }
-
     ## Merge metadata
     m1 = meta(s1)
     m2 = meta(s2)
@@ -193,7 +184,7 @@ combine.spectra = function(s1, s2){
     m3[1 : nrow(m1), names(m1)] = m1
     m3[(1 + nrow(m1)) : nrow(m3), names(m2)] = m2
 
-    spectra(r, w, n, m3, e)
+    spectra(r, w, n, m3)
 }
 
 
@@ -217,7 +208,7 @@ combine.spectra = function(s1, s2){
 #'
 #' @examples
 #' library(spectrolab)
-#' spec = as.spectra(spec_matrix_example)
+#' spec = as.spectra(spec_matrix_example, name_idx = 1)
 #' spec_list = split(spec, names(spec))
 split.spectra = function(x, f, drop = FALSE, ...){
 
@@ -238,8 +229,8 @@ split.spectra = function(x, f, drop = FALSE, ...){
 
 #' Subset spectra by factor
 #'
-#' \code{subset_by} subsets spectra ensuring that each factor `by` appears only
-#' `max` times or less in the spectra dataset.
+#' \code{subset_by} subsets spectra by a factor `by` ensuring that it appears at
+#' most `n_max` times **and** at least `n_min` times in the dataset.
 #'
 #' Note that \code{subset_by} forces you to provide both a minimum and a maximum
 #' number of spectra to be kept for each unique value of `by`. In case you're
@@ -247,8 +238,8 @@ split.spectra = function(x, f, drop = FALSE, ...){
 #'
 #' @param x spectra object
 #' @param by vector coercible to factor and of same length as nrow(x)
-#' @param n_min int. only keep spectra with at least (incl) n_min number of
-#'              samples per unique `by`.
+#' @param n_min int. only keep spectra with at least (inclusive) `n_min` number
+#'              of samples per unique `by`.
 #' @param n_max int. keep at most (incl) this number of spectra per unique `by`
 #' @param random boolean. Sample randomly or keep first n_max? Defaults to TRUE
 #' @return spectra
@@ -260,7 +251,7 @@ split.spectra = function(x, f, drop = FALSE, ...){
 #'
 #' @examples
 #' library(spectrolab)
-#' spec = as.spectra(spec_matrix_example)
+#' spec = as.spectra(spec_matrix_example, name_idx = 1)
 #'
 #' # remove spec of species with less than 4 samples
 #' spec = subset_by(spec, by = names(spec), n_min = 4, n_max = Inf)
@@ -273,6 +264,7 @@ subset_by = function(x, by, n_min, n_max, random = TRUE){
 subset_by.spectra = function(x, by, n_min, n_max, random = TRUE){
 
     by = unlist(by)
+
     if( ! is.vector(by) || length(by) != nrow(x) ){
         stop("`by` must be a vector length equals the number of rows in x")
     }
@@ -293,9 +285,28 @@ subset_by.spectra = function(x, by, n_min, n_max, random = TRUE){
         stop("`n_max` must be larger than `n_min`")
     }
 
+
+    ########################################
+    ## Subset based on n_min
+    ########################################
+
+    tbl_by   = table(by)
+
+    keep_lbl = names(tbl_by[ tbl_by >= n_min ])
+    keep_idx = which(by %in% keep_lbl)
+
+    if(length(keep_idx) == 0){
+        message("chosen `n_min` excluded all spectra. returning NULL.")
+        return(NULL)
+    } else {
+        x  = x[ keep_idx, ]
+        by = by[ keep_idx ]
+    }
+
     ########################################
     ## Subset based on n_max
     ########################################
+
     excl_n_by = table(by) - n_max
     excl_n_by = excl_n_by[ excl_n_by > 0 ]
 
@@ -309,28 +320,57 @@ subset_by.spectra = function(x, by, n_min, n_max, random = TRUE){
         }
         p
     })
+
     excl_idx = unlist(excl_idx)
 
-
     # Exclude indices from `x` and `by` if there's something to exclude
-    if(length(excl_n_by) > 0){
+    if(length(excl_idx) > 0){
         x  = x[ - excl_idx ,  ]
-        by = by[ - excl_idx ]
     }
 
     ########################################
-    ## Subset based on n_min
+    ## return
     ########################################
+    x
 
-    tbl_by = table(by)
-    keep   = names(tbl_by[ tbl_by >= n_min ])
-
-    if(length(keep) == 0){
-        message("chosen `n_min` excluded all spectra. returning NULL.")
-        return(NULL)
-    }
-
-    x[ keep, ]
+    # ########################################
+    # ## Subset based on n_max
+    # ########################################
+    # excl_n_by = table(by) - n_max
+    # excl_n_by = excl_n_by[ excl_n_by > 0 ]
+    #
+    # # Compute indices to exclude
+    # excl_idx = sapply(names(excl_n_by), function(x){
+    #     w = which(by == x)
+    #     if(random){
+    #         p = sample(w, excl_n_by[[x]])
+    #     } else {
+    #         p = utils::tail(w, n = excl_n_by[[x]])
+    #     }
+    #     p
+    # })
+    # excl_idx = unlist(excl_idx)
+    #
+    #
+    # # Exclude indices from `x` and `by` if there's something to exclude
+    # if(length(excl_n_by) > 0){
+    #     x  = x[ - excl_idx ,  ]
+    #     by = by[ - excl_idx ]
+    # }
+    #
+    # ########################################
+    # ## Subset based on n_min
+    # ########################################
+    #
+    # tbl_by = table(by)
+    # keep   = names(tbl_by[ tbl_by >= n_min ])
+    #
+    # if(length(keep) == 0){
+    #     message("chosen `n_min` excluded all spectra. returning NULL.")
+    #     return(NULL)
+    # }
+    #
+    # x[ keep, ]
 }
 
 
@@ -352,7 +392,7 @@ subset_by.spectra = function(x, by, n_min, n_max, random = TRUE){
 #'
 #' @examples
 #' library(spectrolab)
-#' spec = as.spectra(spec_matrix_example)
+#' spec = as.spectra(spec_matrix_example, name_idx = 1)
 #' spec = normalize(spec)
 normalize = function(x, quiet = FALSE, ...){
     UseMethod("normalize")
@@ -517,7 +557,7 @@ i_smooth_mav_spectra = function(x, n = NULL, save_wvls_to_meta = TRUE){
 #'
 #' @examples
 #' library(spectrolab)
-#' spec = as.spectra(spec_matrix_example)
+#' spec = as.spectra(spec_matrix_example, name_idx = 1)
 #' spec = smooth(spec, parallel = FALSE)
 smooth = function(x, method = "spline", ...){
     UseMethod("smooth")
@@ -573,7 +613,7 @@ smooth.spectra = function(x, method = "spline", ...){
 #'
 #' @examples
 #' library(spectrolab)
-#' spec = as.spectra(spec_matrix_example)
+#' spec = as.spectra(spec_matrix_example, name_idx = 1)
 #' spec = resample(spec, new_wvls = seq(400, 2400, 0.5), parallel = FALSE)
 resample = function(x, new_wvls, ...) {
     UseMethod("resample")
