@@ -4,14 +4,22 @@
 \alias{i_read_ascii_spectra}
 \title{Internal parser for ASCII format}
 \usage{
-i_read_ascii_spectra(file_paths, skip_until_tag = NULL,
-  skip_first_n = NULL, sep_char, header, wl_col, refl_cols,
-  divide_refl_by, ...)
+i_read_ascii_spectra(
+  file_paths,
+  skip_until_tag = NULL,
+  skip_first_n = NULL,
+  sep_char,
+  header,
+  wl_col,
+  refl_cols,
+  divide_refl_by,
+  ...
+)
 }
 \arguments{
 \item{file_paths}{paths for files already parsed by `read_spectra`}
 
-\item{skip_until_tag}{Tag that precedes the table of reflectance data,
+\item{skip_until_tag}{Tag that precedes the table of value data,
 indicating that lines until that tag should be skipped.
 Tag is matched with a regexpr.}
 
@@ -22,11 +30,11 @@ not given}
 
 \item{header}{boolean. keep header?}
 
-\item{wl_col}{idx or name of wavelength column}
+\item{wl_col}{idx or name of band column}
 
-\item{refl_cols}{idx or name of reflectance columns. MULTIPLE}
+\item{refl_cols}{idx or name of value columns. MULTIPLE}
 
-\item{divide_refl_by}{divide reflectance values by this. MULTIPLE}
+\item{divide_refl_by}{divide value values by this. MULTIPLE}
 
 \item{...}{additional arguments passed to read table}
 }

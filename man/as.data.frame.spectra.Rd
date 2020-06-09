@@ -4,8 +4,14 @@
 \alias{as.data.frame.spectra}
 \title{Convert spectra to data.frame}
 \usage{
-\method{as.data.frame}{spectra}(x, row.names = NULL, optional = FALSE,
-  fix_names = "none", metadata = TRUE, ...)
+\method{as.data.frame}{spectra}(
+  x,
+  row.names = NULL,
+  optional = FALSE,
+  fix_names = "none",
+  metadata = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{spectra object}
@@ -22,11 +28,11 @@ Pick one: "none" "row" "col" "both".}
 \item{...}{extra parameters passed to the generic as.spectra}
 }
 \value{
-data.frame with: sample_name, metadata (if any) and reflectance.
+data.frame with: sample_name, metadata (if any) and value.
 }
 \description{
 Returns a data.frame that includes sample names, metadata (if present) and
-reflectance data. One advantage over as.matrix, is that the metadata are
+value data. One advantage over as.matrix, is that the metadata are
 returned.
 }
 \examples{

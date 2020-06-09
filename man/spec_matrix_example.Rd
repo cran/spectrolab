@@ -4,13 +4,15 @@
 \name{spec_matrix_example}
 \alias{spec_matrix_example}
 \title{Example spectral dataset}
-\format{An object of class \code{matrix} with 50 rows and 2102 columns.}
+\format{
+An object of class \code{matrix} (inherits from \code{array}) with 50 rows and 2102 columns.
+}
 \usage{
 spec_matrix_example
 }
 \description{
 Simulated spectral dataset as a matrix. First column hold species names and
-the remaining ones the reflectance values. Wavelength labels are given as
+the remaining ones the value values. band labels are given as
 column names
 }
 \author{

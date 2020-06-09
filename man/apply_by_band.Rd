@@ -5,11 +5,9 @@
 \alias{apply_by_band.spectra}
 \title{Apply numeric function by band}
 \usage{
-apply_by_band(x, fun, na.rm = TRUE, keep_txt_meta = TRUE,
-  name = NULL, ...)
+apply_by_band(x, fun, na.rm = TRUE, keep_txt_meta = TRUE, name = NULL, ...)
 
-\method{apply_by_band}{spectra}(x, fun, na.rm = TRUE,
-  keep_txt_meta = TRUE, name = NULL, ...)
+\method{apply_by_band}{spectra}(x, fun, na.rm = TRUE, keep_txt_meta = TRUE, name = NULL, ...)
 }
 \arguments{
 \item{x}{spectra}
@@ -32,7 +30,7 @@ spectra
 \code{apply_by_band} is conceptually similar to apply(as.matrix(x), 2, fun),
 but returns a spectra object while dealing with metadata and attributes.
 Applying a function that does not act on numeric values may crash the function
-or render all reflectance values NA.
+or render all value values NA.
 }
 \section{Methods (by class)}{
 \itemize{

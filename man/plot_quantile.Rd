@@ -4,8 +4,15 @@
 \alias{plot_quantile}
 \title{Plot spectra quantiles}
 \usage{
-plot_quantile(spec, total_prob = 0.95, col = rgb(0, 0, 0, 0.1),
-  border = TRUE, add = FALSE, na.rm = TRUE, ...)
+plot_quantile(
+  spec,
+  total_prob = 0.95,
+  col = rgb(0, 0, 0, 0.1),
+  border = TRUE,
+  add = FALSE,
+  na.rm = TRUE,
+  ...
+)
 }
 \arguments{
 \item{spec}{spectra object}
@@ -28,7 +35,7 @@ between 0.0 and 1.0. Defaults to 0.95.}
 nothing. Called for its side effect.
 }
 \description{
-\code{plot_quantile} plots polygons for the quantiles of spectra per wavelength.
+\code{plot_quantile} plots polygons for the quantiles of spectra per band.
 }
 \examples{
 library(spectrolab)

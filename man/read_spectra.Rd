@@ -4,14 +4,24 @@
 \alias{read_spectra}
 \title{Read files from various formats into `spectra`}
 \usage{
-read_spectra(path, format, recursive = FALSE,
-  exclude_if_matches = NULL, ignore_extension = FALSE, ...)
+read_spectra(
+  path,
+  format,
+  type = "target_reflectance",
+  recursive = FALSE,
+  exclude_if_matches = NULL,
+  ignore_extension = FALSE,
+  ...
+)
 }
 \arguments{
 \item{path}{Path to directory or input files}
 
 \item{format}{file formats. "asd" (for ASD); "sig" or "svc" (for SVC);
 "sed" or "psr" (for SpecEvo PSR).}
+
+\item{type}{Data type to read. "target_reflectance", "target_radiance", or
+"reference_radiance". Defaults to "target_reflectance".}
 
 \item{recursive}{read files recursively}
 
@@ -25,7 +35,7 @@ file in path regardless of the expected extension.}
 }
 \value{
 a single `spectra` or a list of `spectra` (in case files have
-        incompatible band number or wavelengths values)
+        incompatible band number or bands values)
 }
 \description{
 Read files from various formats into `spectra`
@@ -33,6 +43,8 @@ Read files from various formats into `spectra`
 \examples{
 library(spectrolab)
 dir_path = system.file("extdata", "Acer_example", package = "spectrolab")
+
+# Relative reflectance is re
 spec     = read_spectra(path = dir_path, format = "sig")
 }
 \author{

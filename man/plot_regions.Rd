@@ -4,15 +4,22 @@
 \alias{plot_regions}
 \title{Plot polygons for spectral regions}
 \usage{
-plot_regions(spec, regions = default_spec_regions(),
-  col = grDevices::rgb(0.7, 0.7, 0.7, 0.3), border = FALSE,
-  add = TRUE, add_label = TRUE, cex_label = 1, ...)
+plot_regions(
+  spec,
+  regions = default_spec_regions(),
+  col = grDevices::rgb(0.7, 0.7, 0.7, 0.3),
+  border = FALSE,
+  add = TRUE,
+  add_label = TRUE,
+  cex_label = 1,
+  ...
+)
 }
 \arguments{
 \item{spec}{spectra object}
 
 \item{regions}{matrix with spectral regions in columns and only two rows named
-"begin" and "end". Values are the wavelengths where a spectral
+"begin" and "end". Values are the bands where a spectral
 regions begins and ends. See details for how the default regions are defined.}
 
 \item{col}{color for regions. Single value or vector of length ncol (regions).}

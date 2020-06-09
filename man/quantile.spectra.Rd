@@ -4,8 +4,13 @@
 \alias{quantile.spectra}
 \title{Compute spectra quantiles}
 \usage{
-\method{quantile}{spectra}(x, probs = c(0.025, 0.25, 0.5, 0.75, 0.975),
-  na.rm = TRUE, names = NULL, ...)
+\method{quantile}{spectra}(
+  x,
+  probs = c(0.025, 0.25, 0.5, 0.75, 0.975),
+  na.rm = TRUE,
+  names = NULL,
+  ...
+)
 }
 \arguments{
 \item{x}{spectra object. Must have at least the same number of sample that
@@ -25,7 +30,7 @@ to probs. A char vector should otherwise be given. Recyled.}
 spectra object with one spectrum for each prob
 }
 \description{
-\code{quantile} computes quantiles by wavelength and returns them as `spectra`
+\code{quantile} computes quantiles by band and returns them as `spectra`
 }
 \examples{
 library(spectrolab)
