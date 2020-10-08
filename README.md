@@ -1,12 +1,15 @@
 [![Build Status](https://travis-ci.org/meireles/spectrolab.svg?branch=master)](https://travis-ci.org/meireles/spectrolab)
 [![Coverage Status](https://coveralls.io/repos/github/meireles/spectrolab/badge.svg?branch=master)](https://coveralls.io/github/meireles/spectrolab?branch=master)
 [![CRAN Status](https://www.r-pkg.org/badges/version/spectrolab)](https://cran.r-project.org/package=spectrolab)
+[![DOI](https://zenodo.org/badge/73844175.svg)](https://zenodo.org/badge/latestdoi/73844175)
 
 # spectrolab
 
+Spectrolab is an R package that provides a class and methods for processing and visualizing high resolution spectra in R. It is licensed under GPL-3.
+
 ``spectrolab`` 0.09 **Breaks Backwards Compatibility!**
 
-The function `wavelengths` is now `bands` and the function `reflectance` is now `value`. We suggest that you update your code to reflect that change. If you really need to use the older api, install ``spectrolab`` from the `legacy` branch.
+The function `wavelengths` is now `bands` and the function `reflectance` is now `value`. We suggest that you update your code to reflect that change. If you really need to use the older API, install ``spectrolab`` from the `legacy` branch.
 
 
 ## Installation
@@ -17,6 +20,13 @@ You can install spectrolab from Github using:
 library("devtools")
 install_github("meireles/spectrolab")
 ```
+
+Or from CRAN using:
+
+```R
+install.packages("spectrolab")
+```
+
 
 ## Using `spectrolab`
 
