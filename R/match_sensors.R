@@ -2,7 +2,7 @@
 #'
 #' \code{i_find_sensor_overlap_bounds} finds the overlap bounds between sensors
 #'
-#' @param x band vector
+#' @param x wavelength vector
 #' @param idx boolean. return indices? defaults to TRUE
 #' @return data.frame with sensor bounds
 #'
@@ -24,7 +24,6 @@ i_find_sensor_overlap_bounds = function(x, idx = TRUE){
     }
     as.data.frame(bounds)
 }
-
 
 #' Trim sensor overlap
 #'
@@ -52,7 +51,7 @@ i_trim_sensor_overlap = function(x, splice_at){
         w[ seq.int(y[[1]], y[[2]]) ]
     })
 
-    ## trim band lists
+    ## trim wavelength lists
     for(i in 1:length(splice_at) ){
         right      = which(s[[i + 1]] >=  splice_at[i])
         s[[i + 1]] = s[[i + 1]][ right ]
@@ -86,17 +85,17 @@ i_trim_sensor_overlap = function(x, splice_at){
 #'                     If matching 3 sensors, `fixed_sensor` must be 2 (default).
 #' @param interpolate_wvl extent around splice_at values over which the splicing
 #'                        factors will be calculated. Defaults to 5
-#' @param factor_range range of acceptable correction factors (min, max).
-#'                     Defaults to c(0.5, 3)
 #' @return spectra object
+#'
+#' @importFrom stats approx
 #'
 #' @author Jose Eduardo Meireles and Anna Schweiger
 #' @export
+#'
 match_sensors = function(x,
                          splice_at,
                          fixed_sensor    = 2,
-                         interpolate_wvl = 5,
-                         factor_range    = c(0.5, 3) ){
+                         interpolate_wvl = c(5, 1)){
     UseMethod("match_sensors")
 }
 
@@ -106,41 +105,19 @@ match_sensors = function(x,
 match_sensors.spectra = function(x,
                                  splice_at,
                                  fixed_sensor    = 2,
-                                 interpolate_wvl = 5,
-                                 factor_range    = c(0.5, 3)){
+                                 interpolate_wvl = c(5, 1)){
 
-    # message("Warning: feature under development!")
-    # message("match_sensors: should not be used in poduction code.")
-    # message("match_sensors: API will change.")
-
-    x          = x
-    w          = bands(x)
-    splice_at = unlist(splice_at)
-
-    if(length(splice_at) > 2){
-        stop("matching more than 3 sensors not implemented.")
-    }
-
-    if(length(unlist(fixed_sensor)) != 1 | ! fixed_sensor %in% c(1, 2) ){
-        stop("fixed_sensor must be 1 or 2")
-    }
-
+    x            = x
+    w            = bands(x)
+    splice_at    = unlist(splice_at)
     fixed_sensor = ifelse( length(splice_at) == 2, 2, fixed_sensor)
 
 
-    if( ! i_is_increasing(x = w) ){
-        y = i_trim_sensor_overlap(x = x, splice_at = splice_at)
-        x = y$spectra              # reassign x
-        w = bands(x)         # reassign w
-        s = split(w, y$sensor)
-    } else {
-        s = cut(x              = w,
-                breaks         = c(min(w), splice_at, max(w)),
-                include.lowest = TRUE,
-                right          = FALSE,
-                labels         = paste("sensor", seq(length(splice_at) + 1), sep = "_") )
-        s = split(w, s)
-    }
+
+    y = i_trim_sensor_overlap(x = x, splice_at = splice_at)
+    x = y$spectra              # reassign x
+    w = bands(x)               # reassign w
+    s = split(w, y$sensor)
 
     interpolate_wvl = rep(interpolate_wvl, length.out = length(splice_at))
 
@@ -177,18 +154,8 @@ match_sensors.spectra = function(x,
         }
 
         rowMeans(value(x[ , scaled, simplify = FALSE])) /
-            rowMeans(value(x[ ,  fixed, simplify = FALSE]))
+        rowMeans(value(x[ ,  fixed, simplify = FALSE]))
     })
-
-    ## Verify if factors for splicing are reasonable
-    lapply(splice_factors, function(z){
-        crap = which( z < factor_range[[1]] | z > factor_range[[2]] | is.nan(z))
-        if(length(crap) > 0 ){
-            stop("Factors to match sensors are either NaN or are outside the bounds chosen by `factor_range`:",
-                 paste(crap, sep = " "))
-        }
-    })
-
 
     ## Compute the factor matrices
     ## These functions need to be empirically derived. Current implementation
@@ -197,17 +164,20 @@ match_sensors.spectra = function(x,
     s[fixed_sensor] = NULL
 
     factor_mat = lapply(seq_along(splice_factors), function(z){
-        #seq(1.0, y, length.out = length(s$sensor_1))
-        l = length(s[[z]])
-        sapply(splice_factors[[z]], function(w){
-            seq(w, w, length.out = l)
+        wvl = s[[z]]
+        fac = splice_factors[[z]]
+
+        sapply(fac, function(q){
+            approx(x = range(wvl), y = c(1, q), xout = wvl)$y
         })
+
     })
 
     ## Transform data
-    for(i in seq_along(factor_mat)){
-        x[ , s[[i]]] = value(x[ , s[[i]] ] ) * t( factor_mat[[i]] )
-    }
+    # for(i in seq_along(factor_mat)){
+    #     x[ , s[[i]]] = value(x[ , s[[i]] ] ) * t( factor_mat[[i]] )
+    # }
 
+    x[ , s[[1]] ] = value(x[ , s[[1]] ] ) * t( factor_mat[[1]] )
     x
 }

@@ -149,6 +149,8 @@ summary.spectra = function(object, ...){
 #' @return prints to console
 #' @importFrom utils str
 #'
+#' @importFrom utils str
+#'
 #' @author Jose Eduardo Meireles
 #' @export
 #'
