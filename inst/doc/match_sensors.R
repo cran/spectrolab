@@ -34,8 +34,21 @@ abline(v = c(990, 1900), col = "red", lty = 2, lwd = lwd)
 
 ## ---- fig.height=6, fig.width=4, fig.align='center', echo=TRUE----------------
 
-# Boundaries between sensors
-splice_bands = c(990, 1900)
+# Spectrolab's guess of what the splice bands are.
+
+splice_bands_guess = guess_splice_at(reflect_raw)
+splice_bands_guess
+
+# However, you should also visually inspect the spectra to determine what the
+# boundaries between sensors are.
+
+# Finally, if you know what those sensor bounds should be (say, they're given by
+# the manufacturer), just use those numbers instead of spectrolab's guess.
+
+splice_bands_from_manufacturer = c(990, 1900)
+
+splice_bands = splice_bands_from_manufacturer
+
 
 # Match the reflectance and radiance data
 reflect_matched = match_sensors(x               = reflect_raw,

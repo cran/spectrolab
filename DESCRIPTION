@@ -1,7 +1,7 @@
 Package: spectrolab
 Type: Package
 Title: Class and Methods for Hyperspectral Data
-Version: 0.0.11
+Version: 0.0.12
 Date: 2021-05-18
 Authors@R: c(person("Jose Eduardo", "Meireles",email = "jemeireles@gmail.com", role = c("aut", "cre")),
              person("Anna K.", "Schweiger", email =  "anna.k.schweiger@gmail.com", role = "aut"),
@@ -16,12 +16,12 @@ RoxygenNote: 7.1.1
 Depends: R (>= 3.4), stats
 Suggests: knitr (>= 1.16), rmarkdown (>= 1.5), testthat (>= 1.0.2)
 VignetteBuilder: knitr
-Imports: prospectr, grDevices, parallel, RColorBrewer, shiny, shinyjs
+Imports: grDevices, parallel, RColorBrewer, shiny, shinyjs
 NeedsCompilation: no
-Packaged: 2021-05-19 02:48:06 UTC; meireles
+Packaged: 2021-06-01 17:54:22 UTC; meireles
 Author: Jose Eduardo Meireles [aut, cre],
   Anna K. Schweiger [aut],
   Jeannine Cavender-Bares [aut]
 Maintainer: Jose Eduardo Meireles <jemeireles@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-05-19 04:40:09 UTC
+Date/Publication: 2021-06-01 18:10:02 UTC

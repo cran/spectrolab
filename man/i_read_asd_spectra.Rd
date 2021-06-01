@@ -6,8 +6,7 @@
 \usage{
 i_read_asd_spectra(
   file_paths,
-  type = "target_refl",
-  format = c("binary", "txt"),
+  type = "target_reflectance",
   divide_refl_by,
   ...
 )
@@ -18,11 +17,11 @@ i_read_asd_spectra(
 \item{type}{Data type to read. "target_refl", "target_rad", "reference_rad".
 Defaults to "target_refl".}
 
-\item{format}{choice of ASD format. Either "binary" or "txt"}
-
 \item{divide_refl_by}{divide values by this}
 
 \item{...}{NOT USED YET}
+
+\item{format}{choice of ASD format. Either "binary" or "txt"}
 }
 \value{
 spectra object
