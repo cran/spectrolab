@@ -1,8 +1,8 @@
 Package: spectrolab
 Type: Package
 Title: Class and Methods for Spectral Data
-Version: 0.0.13
-Date: 2021-08-05
+Version: 0.0.14
+Date: 2021-08-09
 Authors@R: c(person("Jose Eduardo", "Meireles",email = "jemeireles@gmail.com", role = c("aut", "cre")),
              person("Anna K.", "Schweiger", email =  "anna.k.schweiger@gmail.com", role = "aut"),
              person("Jeannine", "Cavender-Bares", email = "cavender@umn.edu", role = "aut")
@@ -13,15 +13,16 @@ URL: https://CRAN.R-project.org/package=spectrolab
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.1.1
-Depends: R (>= 3.4), stats
-Suggests: knitr (>= 1.16), rmarkdown (>= 1.5), testthat (>= 1.0.2)
+Depends: R (>= 4.0), stats
+Suggests: knitr (>= 1.30), rmarkdown (>= 2.5), testthat (>= 3.0.0)
 VignetteBuilder: knitr
-Imports: grDevices, parallel, RColorBrewer, shiny, shinyjs
+Imports: grDevices, parallel, RColorBrewer (>= 1.0), shiny (>= 1.5.0),
+        shinyjs (>= 1.1)
 NeedsCompilation: no
-Packaged: 2021-08-05 16:06:09 UTC; meireles
+Packaged: 2021-08-12 18:46:14 UTC; meireles
 Author: Jose Eduardo Meireles [aut, cre],
   Anna K. Schweiger [aut],
   Jeannine Cavender-Bares [aut]
 Maintainer: Jose Eduardo Meireles <jemeireles@gmail.com>
 Repository: CRAN
-Date/Publication: 2021-08-05 16:20:02 UTC
+Date/Publication: 2021-08-12 19:00:02 UTC
