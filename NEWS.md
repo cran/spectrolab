@@ -1,3 +1,8 @@
+# spectrolab 0.0.17 (2022-07-12)
+
+## major
+* read spectra can now read the new .sed format.
+
 # spectrolab 0.0.16 (2021-09-26)
 
 ## major
@@ -14,7 +19,7 @@
 * Fixed major bug in read_spectra. The metadata from target and reference where swapped.
 * Now requires R >= 4.0
 
-# minor
+## minor
 * Updated citation
 * Updated intro vignette
 
