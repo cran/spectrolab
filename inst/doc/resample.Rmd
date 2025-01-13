@@ -1,0 +1,38 @@
+---
+title: "Resampling Spectra"
+author: "Jose Eduardo Meireles"
+date: "`r format(Sys.time(), '%B %Y')`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Resampling Spectra}
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteEncoding{UTF-8}
+---
+
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+collapse = TRUE,
+comment = "#>"
+)
+library(spectrolab)
+```
+
+`spectrolab` can resample spectra using the method `resample`. Since version 0.19, spectrolab uses a gaussian model that takes the **Full Width at Half Maximum** or **FWHM** to compute the spectrum values at the new bands.
+
+Here s a quick example.
+
+```{r, eval=TRUE}
+dir_path = system.file("extdata/svc_raw_and_overlap_matched_serbin/SVC_Files_moc", package = "spectrolab")
+
+s_raw     = read_spectra(dir_path)
+
+new_bands = seq(400, 2400, 5)
+fwhm      = make_fwhm(s_raw, new_bands)
+
+s_resamp  = resample(s_raw,new_bands = new_bands, fwhm = fwhm)
+
+plot(s_raw, lwd = 0.5)
+plot(s_resamp, add = TRUE, lwd = 0.25, col = "red")
+```
+
